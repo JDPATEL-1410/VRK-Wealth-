@@ -1,0 +1,1 @@
+export { FixedDeposits } from './AllServices';

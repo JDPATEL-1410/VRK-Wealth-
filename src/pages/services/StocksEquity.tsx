@@ -1,0 +1,1 @@
+export { StocksEquity } from './AllServices';

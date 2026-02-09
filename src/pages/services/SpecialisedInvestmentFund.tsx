@@ -1,0 +1,1 @@
+export { SpecialisedInvestmentFund } from './AllServices';

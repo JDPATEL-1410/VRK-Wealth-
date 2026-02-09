@@ -1,0 +1,120 @@
+.section {
+    padding: 8rem 0;
+    background-color: white;
+}
+
+.wrapper {
+    display: flex;
+    gap: 5rem;
+    align-items: center;
+}
+
+.textSide {
+    flex: 1;
+}
+
+.textSide h2 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.textSide p {
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+}
+
+.cardSide {
+    flex: 1;
+}
+
+.calculatorCard {
+    background: white;
+    padding: 3rem;
+    border-radius: 2rem;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--border);
+    position: relative;
+}
+
+.inputGroup {
+    margin-bottom: 2.5rem;
+}
+
+.labelRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.sliderValue {
+    background: var(--surface);
+    color: var(--primary);
+    padding: 0.25rem 0.8rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.slider {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    background: var(--secondary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 4px solid white;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+}
+
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.resultBox {
+    background: var(--primary);
+    padding: 2rem;
+    border-radius: 1.5rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.resultLabel {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.resultValue {
+    color: var(--secondary);
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.invested {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 1024px) {
+    .wrapper {
+        flex-direction: column;
+        text-align: center;
+        gap: 4rem;
+    }
+}

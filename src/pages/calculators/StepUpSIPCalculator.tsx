@@ -66,9 +66,9 @@ export function StepUpSIPCalculator() {
 
         try {
             await generatePDF('report-content', 'VRK-Wealth-Step-Up-SIP-Report');
-        } catch (error) {
+        } catch (error: any) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. If you are on mobile, please try from a desktop browser.');
+            alert(`Failed to generate PDF: ${error.message || 'Unknown error'}. If you are on mobile, please try from a desktop browser.`);
         } finally {
             setIsExporting(false);
         }

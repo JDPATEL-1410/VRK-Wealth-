@@ -6,18 +6,19 @@ import { jsPDF } from 'jspdf';
  * Supports multi-page splitting and professional headers/footers.
  */
 export const generatePDF = async (elementId: string, filename: string) => {
+    let canvas;
     try {
         const element = document.getElementById(elementId);
-        if (!element) throw new Error('Element not found');
+        if (!element) throw new Error(`Element with id "${elementId}" not found`);
 
-        // Increase scale for high print quality (retina)
-        const canvas = await html2canvas(element, {
-            scale: 2,
+        // Use a more conservative scale to avoid memory issues on mobile/browsers
+        // 1.5 is usually plenty for sharp text while significantly reducing memory usage
+        canvas = await html2canvas(element, {
+            scale: 1.5,
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff',
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
+            // Remove windowWidth/Height as they can cause issues if calculated incorrectly
         });
 
         const imgWidth = 210; // A4 width in mm
@@ -26,25 +27,38 @@ export const generatePDF = async (elementId: string, filename: string) => {
         const contentHeight = canvas.height;
 
         // Calculate the height of the content on an A4 page
-        // We leave some margin for Header (25mm) and Footer (20mm)
+        // We leave margin for Branding Header (22mm) and Footer (17mm)
+        // marginY is the vertical space taken by header/footer + some padding
         const marginY = 45;
         const maxContentHeightPerPage = pageHeight - marginY;
         const imgHeightOnPdf = (contentHeight * imgWidth) / contentWidth;
 
         const totalPages = Math.ceil(imgHeightOnPdf / maxContentHeightPerPage);
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdf = new jsPDF('p', 'mm', 'a4', true); // Enable compression
 
-        const imgData = canvas.toDataURL('image/png', 1.0);
+        const imgData = canvas.toDataURL('image/jpeg', 0.85); // Use JPEG for better performance/smaller size
+
+        const today = new Date().toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
 
         for (let i = 0; i < totalPages; i++) {
             if (i > 0) pdf.addPage();
 
-            // 1. Add Header Branding
-            // Navy blue header bar
+            // 1. Calculate Content Position
+            const position = 25 - (i * maxContentHeightPerPage);
+
+            // 2. Add Content
+            pdf.addImage(imgData, 'JPEG', 5, position, 200, imgHeightOnPdf, undefined, 'FAST');
+
+            // 3. Draw OVERLAYS (Header & Footer) to mask content bleeding
+
+            // Header Overlay
             pdf.setFillColor(30, 58, 138); // #1e3a8a
             pdf.rect(0, 0, 210, 22, 'F');
 
-            // Text branding
             pdf.setTextColor(255, 255, 255);
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(16);
@@ -53,37 +67,9 @@ export const generatePDF = async (elementId: string, filename: string) => {
             pdf.setFont("helvetica", "normal");
             pdf.setFontSize(8);
             pdf.text("STRATEGIC FINANCIAL SOLUTIONS", 15, 18);
-
-            // Date on top right
-            const today = new Date().toLocaleDateString('en-IN', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            });
             pdf.text(`Report Date: ${today}`, 195, 14, { align: 'right' });
 
-            // 2. Add Content
-            // We use a vertical offset approach to place the content on each page.
-            const position = 25 - (i * maxContentHeightPerPage);
-
-            pdf.addImage(imgData, 'PNG', 5, position, 200, imgHeightOnPdf, undefined, 'FAST');
-
-            // Cover up any content that bled into the header/footer zones
-            pdf.setFillColor(255, 255, 255);
-            // Re-draw header background white briefly if needed? No, just draw header/footer last.
-            // Actually, we'll draw header/footer last on top of content.
-
-            // Redraw Header on top of content
-            pdf.setFillColor(30, 58, 138);
-            pdf.rect(0, 0, 210, 22, 'F');
-            pdf.setTextColor(255, 255, 255);
-            pdf.setFontSize(16);
-            pdf.text("VRK WEALTH", 15, 14);
-            pdf.setFontSize(8);
-            pdf.text("STRATEGIC FINANCIAL SOLUTIONS", 15, 18);
-            pdf.text(`Report Date: ${today}`, 195, 14, { align: 'right' });
-
-            // 3. Add Footer Branding
+            // Footer Overlay
             pdf.setFillColor(248, 250, 252); // bg-slate-50
             pdf.rect(0, 280, 210, 17, 'F');
 
@@ -94,7 +80,6 @@ export const generatePDF = async (elementId: string, filename: string) => {
             pdf.setFont("helvetica", "bold");
             pdf.text(`Page ${i + 1} of ${totalPages}`, 195, 288, { align: 'right' });
 
-            // Simple Disclaimer on every page footer
             pdf.setFont("helvetica", "italic");
             pdf.setFontSize(6);
             pdf.text("Disclaimer: Mutual fund investments are subject to market risks. Please read all scheme related documents carefully before investing.", 15, 294);
@@ -111,8 +96,12 @@ export const generatePDF = async (elementId: string, filename: string) => {
 
         pdf.save(`${filename}.pdf`);
         return true;
-    } catch (error) {
-        console.error('PDF Generation Error:', error);
-        throw error;
+    } catch (error: any) {
+        console.error('Detailed PDF Generation Error:', error);
+        // Throw a more descriptive error
+        throw new Error(error.message || 'Unknown PDF generation error');
+    } finally {
+        // Help GC if needed
+        canvas = null;
     }
 };

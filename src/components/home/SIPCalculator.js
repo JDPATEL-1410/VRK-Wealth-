@@ -39,7 +39,7 @@ const SIPCalculator = () => {
             await generatePDF('home-sip-card', 'VRK-Wealth-SIP-Quick-Report');
         } catch (error) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. If you are on mobile, please try from a desktop browser.');
+            alert(`Failed to generate PDF: ${error.message || 'Unknown error'}. If you are on mobile, please try from a desktop browser.`);
         } finally {
             setIsExporting(false);
         }

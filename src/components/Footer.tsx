@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 export function Footer() {
   return (
@@ -16,7 +17,7 @@ export function Footer() {
           <div>
             <Link to="/" className="inline-block mb-6 group">
               <img
-                src="/src/assets/logo.png"
+                src={logo}
                 alt="VRK Wealth Logo"
                 className="h-24 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
               />

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { Link } from 'react-router-dom';
 import {
   Award,
   CheckCircle2,
@@ -36,6 +37,8 @@ const staggerContainer = {
     transition: { staggerChildren: 0.1 }
   }
 };
+
+const MotionLink = motion(Link);
 
 export default function HomeLight() {
   const [servicesRef, servicesInView] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -276,8 +279,8 @@ export default function HomeLight() {
 
               {/* Premium Actions */}
               <div className="flex flex-col sm:flex-row gap-8 justify-center items-center mb-24">
-                <motion.a
-                  href="/contact"
+                <MotionLink
+                  to="/contact"
                   whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.95 }}
                   className="group relative px-12 py-5 bg-[#1e3a8a] text-white rounded-[2.5rem] font-black text-xl shadow-2xl shadow-blue-900/40 overflow-hidden flex items-center gap-3"
@@ -285,16 +288,16 @@ export default function HomeLight() {
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-teal-600 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                   <span className="relative z-10 uppercase tracking-[0.1em]">Consult An Expert</span>
                   <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-2 transition-transform duration-500" />
-                </motion.a>
+                </MotionLink>
 
-                <motion.a
-                  href="/calculators"
+                <MotionLink
+                  to="/calculators"
                   whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.95 }}
                   className="group px-12 py-5 bg-white text-[#1e3a8a] border-2 border-slate-100 rounded-[2.5rem] font-black text-xl shadow-xl hover:border-blue-600 transition-all uppercase tracking-[0.1em]"
                 >
                   Explore Strategies
-                </motion.a>
+                </MotionLink>
               </div>
 
               {/* Floating Feature Cards */}
@@ -353,15 +356,15 @@ export default function HomeLight() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
             {goals.map((goal, index) => (
-              <motion.a
+              <MotionLink
                 key={index}
-                href={goal.link}
+                to={goal.link}
                 whileHover={{ y: -8, scale: 1.05 }}
                 className="bg-white p-6 rounded-2xl text-center shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 block"
               >
                 <goal.icon className={`w-12 h-12 mx-auto mb-4 ${goal.color}`} />
                 <h3 className="text-sm font-semibold text-gray-900">{goal.title}</h3>
-              </motion.a>
+              </MotionLink>
             ))}
           </div>
         </div>
@@ -387,9 +390,9 @@ export default function HomeLight() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-12">
             {services.slice(0, 6).map((service, index) => (
-              <motion.a
+              <MotionLink
                 key={index}
-                href={`/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`}
+                to={`/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`}
                 variants={fadeInUp}
                 whileHover={{ y: -8 }}
                 className="group bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-200 hover:shadow-2xl transition-all duration-300"
@@ -415,18 +418,18 @@ export default function HomeLight() {
                     <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-              </motion.a>
+              </MotionLink>
             ))}
           </div>
 
           <motion.div variants={fadeInUp} className="text-center">
-            <a
-              href="/services"
+            <Link
+              to="/services"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
             >
               Explore All Services
               <ArrowRight className="w-5 h-5" />
-            </a>
+            </Link>
           </motion.div>
         </div>
       </motion.section>
@@ -490,9 +493,9 @@ export default function HomeLight() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mb-12">
             {tools.map((tool, index) => (
-              <motion.a
+              <MotionLink
                 key={index}
-                href="/calculators"
+                to="/calculators"
                 whileHover={{ y: -8, scale: 1.02 }}
                 className="group p-8 rounded-2xl bg-white border-2 border-gray-200 shadow-lg hover:shadow-xl hover:border-teal-600 transition-all duration-300"
               >
@@ -507,7 +510,7 @@ export default function HomeLight() {
                   Calculate Now
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
-              </motion.a>
+              </MotionLink>
             ))}
           </div>
 
@@ -517,13 +520,13 @@ export default function HomeLight() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <a
-              href="/calculators"
+            <Link
+              to="/calculators"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-gray-900 border-2 border-gray-200 rounded-xl font-semibold text-lg hover:border-teal-600 hover:text-teal-600 hover:scale-105 transition-all duration-300"
             >
               Explore More Financial Tools
               <ArrowRight className="w-5 h-5" />
-            </a>
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -646,14 +649,14 @@ export default function HomeLight() {
               transition={{ delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <a
-                href="/contact"
+              <Link
+                to="/contact"
                 className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
               >
                 <Calendar className="w-5 h-5" />
                 Schedule Free Consultation
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
               <a
                 href="tel:+919876543210"
                 className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300"

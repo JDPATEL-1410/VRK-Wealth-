@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { TrendingUp, PieChart as PieChartIcon, Calendar, IndianRupee, Download, ArrowRight } from 'lucide-react';
 import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { PageHeader } from '../../components/PageHeader';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 export function StepUpSIPCalculator() {
     const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
@@ -59,29 +58,19 @@ export function StepUpSIPCalculator() {
         return `₹${value.toLocaleString('en-IN')}`;
     };
 
+    const [isExporting, setIsExporting] = useState(false);
+
     const downloadReport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
+
         try {
-            const element = document.getElementById('report-content');
-            if (!element) return;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`VRK-Wealth-Step-Up-SIP-Report.pdf`);
+            await generatePDF('report-content', 'VRK-Wealth-Step-Up-SIP-Report');
         } catch (error) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert('Failed to generate PDF. If you are on mobile, please try from a desktop browser.');
+        } finally {
+            setIsExporting(false);
         }
     };
 
@@ -95,7 +84,18 @@ export function StepUpSIPCalculator() {
             />
 
             <div className="container mx-auto px-4 py-12">
-                <div id="report-content" className="bg-gray-50 p-4">
+                <div id="report-content" className="bg-white p-8 rounded-[3rem]">
+                    {/* Report Branding Header */}
+                    <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b-2 border-slate-100 pb-8 gap-4">
+                        <div>
+                            <h2 className="text-4xl font-black text-[#1e3a8a] mb-2 uppercase tracking-tight">Step-Up SIP Projection</h2>
+                            <p className="text-slate-500 font-black uppercase tracking-[0.2em] text-xs">Accelerated wealth creation analysis</p>
+                        </div>
+                        <div className="bg-blue-50 px-6 py-3 rounded-2xl border border-blue-100">
+                            <span className="text-[#1e3a8a] font-black text-sm uppercase">Growth Optimized</span>
+                        </div>
+                    </div>
+
                     <div className="grid lg:grid-cols-2 gap-8">
                         <div className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100">
                             <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center">
@@ -169,10 +169,15 @@ export function StepUpSIPCalculator() {
                             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <button
                                     onClick={downloadReport}
-                                    className="bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md"
+                                    disabled={isExporting}
+                                    className="bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <Download className="w-5 h-5" />
-                                    Download PDF
+                                    {isExporting ? (
+                                        <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin"></div>
+                                    ) : (
+                                        <Download className="w-5 h-5" />
+                                    )}
+                                    {isExporting ? 'Generating...' : 'Download PDF'}
                                 </button>
                                 <button className="bg-[#1e3a8a] text-white py-4 rounded-xl font-black text-lg hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg shadow-blue-900/10">
                                     Accelerate Goal <ArrowRight className="ml-2 w-5 h-5" />

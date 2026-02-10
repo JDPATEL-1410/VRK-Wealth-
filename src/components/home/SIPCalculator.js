@@ -96,62 +96,69 @@ const SIPCalculator = () => {
                         <div className="bg-white rounded-[2.5rem] shadow-2xl p-10 border border-gray-100 relative overflow-hidden group" id="home-sip-card">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
 
-                            <div className="space-y-10 relative z-10">
-                                <div className={styles.inputGroup}>
-                                    <div className="flex justify-between items-center mb-4">
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monthly Contribution</span>
-                                        <span className="text-xl font-black text-[#1e3a8a] bg-blue-50 px-3 py-1 rounded-lg">₹{amount.toLocaleString('en-IN')}</span>
-                                    </div>
-                                    <input
-                                        type="range"
-                                        min="500" max="100000" step="500"
-                                        value={amount}
-                                        onChange={(e) => setAmount(Number(e.target.value))}
-                                        className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#1e3a8a]"
-                                    />
+                            <div className="relative z-10">
+                                <div className="mb-8 pb-6 border-b border-gray-100">
+                                    <h3 className="text-xl font-black text-[#1e3a8a] uppercase tracking-tight">Wealth Projection</h3>
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Quick SIP Analysis Report</p>
                                 </div>
 
-                                <div className={styles.inputGroup}>
-                                    <div className="flex justify-between items-center mb-4">
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Investment Period</span>
-                                        <span className="text-xl font-black text-[#0d9488] bg-teal-50 px-3 py-1 rounded-lg">{years} Years</span>
+                                <div className="space-y-10">
+                                    <div className={styles.inputGroup}>
+                                        <div className="flex justify-between items-center mb-4">
+                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monthly Contribution</span>
+                                            <span className="text-xl font-black text-[#1e3a8a] bg-blue-50 px-3 py-1 rounded-lg">₹{amount.toLocaleString('en-IN')}</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min="500" max="100000" step="500"
+                                            value={amount}
+                                            onChange={(e) => setAmount(Number(e.target.value))}
+                                            className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#1e3a8a]"
+                                        />
                                     </div>
-                                    <input
-                                        type="range"
-                                        min="1" max="30" step="1"
-                                        value={years}
-                                        onChange={(e) => setYears(Number(e.target.value))}
-                                        className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#0d9488]"
-                                    />
-                                </div>
 
-                                <div className={styles.inputGroup}>
-                                    <div className="flex justify-between items-center mb-4">
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Expected Returns %</span>
-                                        <span className="text-xl font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">{returns}%</span>
+                                    <div className={styles.inputGroup}>
+                                        <div className="flex justify-between items-center mb-4">
+                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Investment Period</span>
+                                            <span className="text-xl font-black text-[#0d9488] bg-teal-50 px-3 py-1 rounded-lg">{years} Years</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min="1" max="30" step="1"
+                                            value={years}
+                                            onChange={(e) => setYears(Number(e.target.value))}
+                                            className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#0d9488]"
+                                        />
                                     </div>
-                                    <input
-                                        type="range"
-                                        min="5" max="25" step="0.5"
-                                        value={returns}
-                                        onChange={(e) => setReturns(Number(e.target.value))}
-                                        className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-amber-500"
-                                    />
-                                </div>
 
-                                <div className="bg-[#1e3a8a] rounded-[2rem] p-8 text-white shadow-xl mt-6 relative overflow-hidden group/box">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
-                                    <div className="relative z-10 text-center">
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 mb-3">Projected Maturity Balance</p>
-                                        <div className="text-4xl font-black mb-4">{formatCurrency(calculateSip.total)}</div>
-                                        <div className="pt-4 border-t border-white/10 flex justify-between gap-4">
-                                            <div className="text-left">
-                                                <p className="text-[8px] font-black text-white/30 uppercase tracking-widest">Invested</p>
-                                                <p className="text-xs font-bold text-white/90">{formatCurrency(calculateSip.invested)}</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-[8px] font-black text-white/30 uppercase tracking-widest">Wealth Gain</p>
-                                                <p className="text-xs font-bold text-teal-400">{formatCurrency(calculateSip.gains)}</p>
+                                    <div className={styles.inputGroup}>
+                                        <div className="flex justify-between items-center mb-4">
+                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Expected Returns %</span>
+                                            <span className="text-xl font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">{returns}%</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min="5" max="25" step="0.5"
+                                            value={returns}
+                                            onChange={(e) => setReturns(Number(e.target.value))}
+                                            className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                        />
+                                    </div>
+
+                                    <div className="bg-[#1e3a8a] rounded-[2rem] p-8 text-white shadow-xl mt-6 relative overflow-hidden group/box">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+                                        <div className="relative z-10 text-center">
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 mb-3">Projected Maturity Balance</p>
+                                            <div className="text-4xl font-black mb-4">{formatCurrency(calculateSip.total)}</div>
+                                            <div className="pt-4 border-t border-white/10 flex justify-between gap-4">
+                                                <div className="text-left">
+                                                    <p className="text-[8px] font-black text-white/30 uppercase tracking-widest">Invested</p>
+                                                    <p className="text-xs font-bold text-white/90">{formatCurrency(calculateSip.invested)}</p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-[8px] font-black text-white/30 uppercase tracking-widest">Wealth Gain</p>
+                                                    <p className="text-xs font-bold text-teal-400">{formatCurrency(calculateSip.gains)}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -103,7 +103,18 @@ export function RetirementCalculator() {
             />
 
             <div className="container mx-auto px-4 py-16">
-                <div id="report-content" className="bg-gray-50 p-4">
+                <div id="report-content" className="bg-white p-8 rounded-[3rem]">
+                    {/* Report Branding Header */}
+                    <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b-2 border-slate-100 pb-8 gap-4">
+                        <div>
+                            <h2 className="text-4xl font-black text-[#1e3a8a] mb-2 uppercase tracking-tight">Financial Freedom Roadmap</h2>
+                            <p className="text-slate-500 font-black uppercase tracking-[0.2em] text-xs">Custom retirement projection for your golden years</p>
+                        </div>
+                        <div className="bg-blue-50 px-6 py-3 rounded-2xl border border-blue-100">
+                            <span className="text-[#1e3a8a] font-black text-sm uppercase">Secure Tomorrow</span>
+                        </div>
+                    </div>
+
                     <motion.div
                         initial="hidden"
                         animate="visible"

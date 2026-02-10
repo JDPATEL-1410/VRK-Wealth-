@@ -2,8 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { FaCheckCircle, FaDownload, FaArrowRight } from 'react-icons/fa';
 import styles from './SIPCalculator.module.css';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 const SIPCalculator = () => {
     const [amount, setAmount] = useState(10000);
@@ -30,29 +29,19 @@ const SIPCalculator = () => {
         }).format(val);
     };
 
+    const [isExporting, setIsExporting] = useState(false);
+
     const downloadReport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
+
         try {
-            const element = document.getElementById('home-sip-card');
-            if (!element) return;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`VRK-Wealth-SIP-Quick-Report.pdf`);
+            await generatePDF('home-sip-card', 'VRK-Wealth-SIP-Quick-Report');
         } catch (error) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert('Failed to generate PDF. If you are on mobile, please try from a desktop browser.');
+        } finally {
+            setIsExporting(false);
         }
     };
 
@@ -84,9 +73,15 @@ const SIPCalculator = () => {
                         <div className="flex flex-col sm:flex-row gap-4">
                             <button
                                 onClick={downloadReport}
-                                className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white border-2 border-[#1e3a8a] text-[#1e3a8a] rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-50 transition-all shadow-lg active:scale-95"
+                                disabled={isExporting}
+                                className={`inline-flex items-center justify-center gap-3 px-8 py-4 bg-white border-2 border-[#1e3a8a] text-[#1e3a8a] rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-50 transition-all shadow-lg active:scale-95 ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
-                                <FaDownload /> Save Projection
+                                {isExporting ? (
+                                    <div className="w-4 h-4 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                    <FaDownload />
+                                )}
+                                {isExporting ? 'Generating...' : 'Save Projection'}
                             </button>
                             <a
                                 href="/calculators/sip"

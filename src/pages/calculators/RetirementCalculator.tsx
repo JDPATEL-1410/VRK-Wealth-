@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Target, IndianRupee, Info, TrendingUp, ArrowRight, Download, FileText } from 'lucide-react';
+import { Target, IndianRupee, Info, TrendingUp, ArrowRight, Download } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
 import { motion } from 'framer-motion';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -78,29 +77,19 @@ export function RetirementCalculator() {
         return `₹${value.toLocaleString('en-IN')}`;
     };
 
+    const [isExporting, setIsExporting] = useState(false);
+
     const downloadReport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
+
         try {
-            const element = document.getElementById('report-content');
-            if (!element) return;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`VRK-Wealth-Retirement-Planning-Report.pdf`);
+            await generatePDF('report-content', 'VRK-Wealth-Retirement-Planning-Report');
         } catch (error) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert('Failed to generate PDF. If you are on mobile, please try from a desktop browser.');
+        } finally {
+            setIsExporting(false);
         }
     };
 
@@ -255,10 +244,15 @@ export function RetirementCalculator() {
                                 <div className="space-y-4">
                                     <button
                                         onClick={downloadReport}
-                                        className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-all shadow-lg"
+                                        disabled={isExporting}
+                                        className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        <Download className="w-6 h-6" />
-                                        Download PDF
+                                        {isExporting ? (
+                                            <div className="w-6 h-6 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin"></div>
+                                        ) : (
+                                            <Download className="w-6 h-6" />
+                                        )}
+                                        {isExporting ? 'Generating...' : 'Download PDF'}
                                     </button>
                                     <Link
                                         to="/contact"

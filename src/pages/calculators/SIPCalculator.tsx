@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { TrendingUp, PieChart as PieChartIcon, Calendar, ArrowRight, IndianRupee, Download } from 'lucide-react';
 import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { PageHeader } from '../../components/PageHeader';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 export function SIPCalculator() {
   const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
@@ -56,35 +55,19 @@ export function SIPCalculator() {
     return `₹${value.toLocaleString('en-IN')}`;
   };
 
+  const [isExporting, setIsExporting] = useState(false);
+
   const downloadReport = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+
     try {
-      const element = document.getElementById('report-content');
-      if (!element) {
-        console.error('Report element not found');
-        return;
-      }
-
-      console.log('Starting PDF generation...');
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: true,
-        backgroundColor: '#ffffff'
-      });
-
-      console.log('Canvas captured, creating PDF...');
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`VRK-Wealth-SIP-Report.pdf`);
-      console.log('PDF saved successfully');
+      await generatePDF('report-content', 'VRK-Wealth-SIP-Report');
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      console.error('PDF Generation Error:', error);
+      alert('Failed to generate PDF. If you are on mobile, please try from a desktop browser.');
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -172,10 +155,15 @@ export function SIPCalculator() {
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button
                   onClick={downloadReport}
-                  className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md"
+                  disabled={isExporting}
+                  className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Download className="w-5 h-5" />
-                  Download PDF
+                  {isExporting ? (
+                    <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <Download className="w-5 h-5" />
+                  )}
+                  {isExporting ? 'Generating...' : 'Download PDF'}
                 </button>
                 <button className="w-full bg-[#1e3a8a] text-white py-4 rounded-xl font-black text-lg hover:scale-[1.02] transition-all flex items-center justify-center shadow-lg shadow-blue-900/20">
                   Start Your SIP Now <ArrowRight className="ml-2 w-5 h-5" />

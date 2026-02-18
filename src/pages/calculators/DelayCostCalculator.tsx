@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Clock, TrendingUp, IndianRupee, AlertCircle, Download, ArrowRight } from 'lucide-react';
+import { Clock, TrendingUp, AlertCircle, Download, ArrowRight } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 export function DelayCostCalculator() {
     const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
@@ -65,29 +64,18 @@ export function DelayCostCalculator() {
         return `₹${value.toLocaleString('en-IN')}`;
     };
 
+    const [isExporting, setIsExporting] = useState(false);
+
     const downloadReport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
         try {
-            const element = document.getElementById('report-content');
-            if (!element) return;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`VRK-Wealth-Delay-Cost-Report.pdf`);
-        } catch (error) {
+            await generatePDF('report-content', 'VRK-Wealth-Delay-Cost-Report');
+        } catch (error: any) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert(`Failed to generate PDF: ${error.message || 'Unknown error'}`);
+        } finally {
+            setIsExporting(false);
         }
     };
 
@@ -97,7 +85,9 @@ export function DelayCostCalculator() {
                 title="Delay Cost"
                 highlightedText="Calculator"
                 subtitle="See how delaying investments impacts your wealth creation goals and future returns"
-                icon={<Clock className="w-16 h-16 text-[#0d9488]" />}
+                image="https://images.unsplash.com/photo-1501139083538-0139583c060f?w=1920&auto=format&fit=crop&q=80"
+                badge="Don't Wait, Start Today"
+                icon={<Clock className="w-4 h-4 text-white/80" />}
             />
 
             <div className="container mx-auto px-4 py-12">
@@ -120,10 +110,11 @@ export function DelayCostCalculator() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                                 <button
                                     onClick={downloadReport}
-                                    className="bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md"
+                                    disabled={isExporting}
+                                    className="bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <Download className="w-5 h-5" />
-                                    Download PDF
+                                    {isExporting ? <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin" /> : <Download className="w-5 h-5" />}
+                                    {isExporting ? 'Generating...' : 'Download PDF'}
                                 </button>
                                 <Link to="/contact" className="bg-[#1e3a8a] text-white py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-blue-900/10">
                                     Start Now <ArrowRight className="w-5 h-5" />

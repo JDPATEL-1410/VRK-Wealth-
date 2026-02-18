@@ -153,6 +153,8 @@ export default function AboutLight() {
         title="About"
         highlightedText="VRK Wealth"
         subtitle="Your trusted partner in building long-term wealth through disciplined, goal-based investing"
+        image="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1920&auto=format&fit=crop&q=80"
+        badge="Our Story"
       />
 
       {/* Vision & Mission - Enhanced & Moved to Top */}

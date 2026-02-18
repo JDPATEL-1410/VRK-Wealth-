@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Calculator, TrendingUp, PieChart as PieChartIcon, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../utils/pdfGenerator';
 
 export function AdvancedSIPCalculator() {
   const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
@@ -66,29 +65,18 @@ export function AdvancedSIPCalculator() {
     return `₹${value.toLocaleString('en-IN')}`;
   };
 
+  const [isExporting, setIsExporting] = useState(false);
+
   const downloadReport = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
     try {
-      const element = document.getElementById('report-content');
-      if (!element) return;
-
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff'
-      });
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`VRK-Wealth-Advanced-SIP-Report.pdf`);
-    } catch (error) {
+      await generatePDF('advanced-sip-report', 'VRK-Wealth-Advanced-SIP-Report');
+    } catch (error: any) {
       console.error('PDF Generation Error:', error);
-      alert('Failed to generate PDF. Please try again.');
+      alert(`Failed to generate PDF: ${error.message || 'Unknown error'}`);
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -283,10 +271,11 @@ export function AdvancedSIPCalculator() {
       <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-100">
         <button
           onClick={downloadReport}
-          className="flex-1 bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md active:scale-95"
+          disabled={isExporting}
+          className="flex-1 bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Download className="w-5 h-5" />
-          Download PDF Matrix
+          {isExporting ? <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin" /> : <Download className="w-5 h-5" />}
+          {isExporting ? 'Generating...' : 'Download PDF Matrix'}
         </button>
         <Link
           to="/contact"

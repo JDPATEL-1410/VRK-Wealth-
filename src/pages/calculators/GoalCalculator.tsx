@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Target, Sparkles, Download, ArrowRight, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 export function GoalCalculator() {
     const [goalName, setGoalName] = useState('Dream Home');
@@ -36,29 +35,18 @@ export function GoalCalculator() {
         return `₹${value.toLocaleString('en-IN')}`;
     };
 
+    const [isExporting, setIsExporting] = useState(false);
+
     const downloadReport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
         try {
-            const element = document.getElementById('report-content');
-            if (!element) return;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`VRK-Wealth-Goal-Planning-Report.pdf`);
-        } catch (error) {
+            await generatePDF('report-content', 'VRK-Wealth-Goal-Planning-Report');
+        } catch (error: any) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert(`Failed to generate PDF: ${error.message || 'Unknown error'}`);
+        } finally {
+            setIsExporting(false);
         }
     };
 
@@ -68,7 +56,9 @@ export function GoalCalculator() {
                 title="Goal"
                 highlightedText="Solutions"
                 subtitle="Every dream needs a blueprint. Calculate exactly what it takes to reach your milestone."
-                icon={<Target className="w-16 h-16 text-[#0d9488]" />}
+                image="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&auto=format&fit=crop&q=80"
+                badge="Achieve Your Dreams"
+                icon={<Target className="w-4 h-4 text-white/80" />}
             />
 
             <div id="report-content" className="container mx-auto px-4 py-12 bg-gray-50">
@@ -116,10 +106,11 @@ export function GoalCalculator() {
                         <div className="mt-12 space-y-4">
                             <button
                                 onClick={downloadReport}
-                                className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md"
+                                disabled={isExporting}
+                                className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Download className="w-5 h-5" />
-                                Download PDF
+                                {isExporting ? <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin" /> : <Download className="w-5 h-5" />}
+                                {isExporting ? 'Generating...' : 'Download PDF'}
                             </button>
                             <Link to="/contact" className="w-full bg-[#1e3a8a] text-white py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-blue-900/10">
                                 Execute Plan <ArrowRight className="w-5 h-5" />

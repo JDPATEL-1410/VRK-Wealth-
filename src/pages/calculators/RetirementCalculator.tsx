@@ -99,7 +99,9 @@ export function RetirementCalculator() {
                 title="Retirement"
                 highlightedText="Calculator"
                 subtitle="Design your financial freedom. Plan your golden years with expert corpus projections."
-                icon={<Target className="w-16 h-16 text-[#0d9488]" />}
+                image="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1920&auto=format&fit=crop&q=80"
+                badge="Plan Your Golden Years"
+                icon={<Target className="w-4 h-4 text-white/80" />}
             />
 
             <div className="container mx-auto px-4 py-16">

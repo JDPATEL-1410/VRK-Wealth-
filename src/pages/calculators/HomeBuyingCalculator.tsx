@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Home, Key, Percent, ArrowRight, Download, FileText } from 'lucide-react';
+import { Home, Key, Percent, Download, FileText } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
 import { motion } from 'framer-motion';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -42,29 +41,18 @@ export function HomeBuyingCalculator() {
         return `₹${value.toLocaleString('en-IN')}`;
     };
 
+    const [isExporting, setIsExporting] = useState(false);
+
     const downloadReport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
         try {
-            const element = document.getElementById('report-content');
-            if (!element) return;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`VRK-Wealth-Home-Buying-Report.pdf`);
-        } catch (error) {
+            await generatePDF('report-content', 'VRK-Wealth-Home-Buying-Report');
+        } catch (error: any) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert(`Failed to generate PDF: ${error.message || 'Unknown error'}`);
+        } finally {
+            setIsExporting(false);
         }
     };
 
@@ -79,7 +67,9 @@ export function HomeBuyingCalculator() {
                 title="Dream Home"
                 highlightedText="Calculator"
                 subtitle="Calculate the future value of your dream property and create a systematic roadmap to ownership."
-                icon={<Home className="w-16 h-16 text-[#0d9488]" />}
+                image="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1920&auto=format&fit=crop&q=80"
+                badge="Your Home Awaits"
+                icon={<Home className="w-4 h-4 text-white/80" />}
             />
 
             <div className="container mx-auto px-4 py-16">
@@ -211,10 +201,11 @@ export function HomeBuyingCalculator() {
                                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <button
                                         onClick={downloadReport}
-                                        className="bg-white text-[#1e3a8a] py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all active:scale-95 border-2 border-white"
+                                        disabled={isExporting}
+                                        className="bg-white text-[#1e3a8a] py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all active:scale-95 border-2 border-white disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        <Download className="w-6 h-6" />
-                                        PDF Report
+                                        {isExporting ? <div className="w-6 h-6 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin" /> : <Download className="w-6 h-6" />}
+                                        {isExporting ? 'Generating...' : 'PDF Report'}
                                     </button>
                                     <Link
                                         to="/contact"

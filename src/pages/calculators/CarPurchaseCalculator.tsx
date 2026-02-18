@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Car, Key, ArrowRight, TrendingUp, Download, FileText } from 'lucide-react';
+import { Car, Key, TrendingUp, Download, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
 import { motion } from 'framer-motion';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -40,29 +39,18 @@ export function CarPurchaseCalculator() {
         return `₹${value.toLocaleString('en-IN')}`;
     };
 
+    const [isExporting, setIsExporting] = useState(false);
+
     const downloadReport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
         try {
-            const element = document.getElementById('report-content');
-            if (!element) return;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`VRK-Wealth-Car-Purchase-Report.pdf`);
-        } catch (error) {
+            await generatePDF('report-content', 'VRK-Wealth-Car-Purchase-Report');
+        } catch (error: any) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert(`Failed to generate PDF: ${error.message || 'Unknown error'}`);
+        } finally {
+            setIsExporting(false);
         }
     };
 
@@ -72,7 +60,9 @@ export function CarPurchaseCalculator() {
                 title="Vehicle Purchase"
                 highlightedText="Calculator"
                 subtitle="Accelerate your way to your dream car. Plan your automotive investment with precision."
-                icon={<Car className="w-16 h-16 text-[#0d9488]" />}
+                image="https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1920&auto=format&fit=crop&q=80"
+                badge="Drive Your Dream"
+                icon={<Car className="w-4 h-4 text-white/80" />}
             />
 
             <div className="container mx-auto px-4 py-16">
@@ -165,10 +155,11 @@ export function CarPurchaseCalculator() {
                                     <div className="flex flex-col sm:flex-row gap-4 relative z-10">
                                         <button
                                             onClick={downloadReport}
-                                            className="flex-1 bg-white text-[#1e3a8a] py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition-all shadow-xl"
+                                            disabled={isExporting}
+                                            className="flex-1 bg-white text-[#1e3a8a] py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            <Download className="w-6 h-6" />
-                                            PDF Report
+                                            {isExporting ? <div className="w-6 h-6 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin" /> : <Download className="w-6 h-6" />}
+                                            {isExporting ? 'Generating...' : 'PDF Report'}
                                         </button>
                                         <Link
                                             to="/contact"

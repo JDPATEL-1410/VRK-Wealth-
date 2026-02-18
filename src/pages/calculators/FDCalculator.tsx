@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Wallet, PieChart as PieChartIcon, Download, ArrowRight, IndianRupee } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { PageHeader } from '../../components/PageHeader';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 export function FDCalculator() {
     const [investment, setInvestment] = useState(100000);
@@ -35,29 +34,18 @@ export function FDCalculator() {
         { name: 'Interest Component', value: estReturns, color: '#0d9488' }
     ];
 
+    const [isExporting, setIsExporting] = useState(false);
+
     const downloadReport = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
         try {
-            const element = document.getElementById('report-content');
-            if (!element) return;
-
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`VRK-Wealth-FD-Report.pdf`);
-        } catch (error) {
+            await generatePDF('report-content', 'VRK-Wealth-FD-Report');
+        } catch (error: any) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert(`Failed to generate PDF: ${error.message || 'Unknown error'}`);
+        } finally {
+            setIsExporting(false);
         }
     };
 
@@ -67,7 +55,9 @@ export function FDCalculator() {
                 title="Fixed Deposit"
                 highlightedText="Calculator"
                 subtitle="Calculate maturity amount and interest earned on your fixed deposits with quarterly compounding."
-                icon={<Wallet className="w-16 h-16 text-[#0d9488]" />}
+                image="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1920&auto=format&fit=crop&q=80"
+                badge="Safe & Guaranteed Returns"
+                icon={<Wallet className="w-4 h-4 text-white/80" />}
             />
 
             <div id="report-content" className="container mx-auto px-4 py-12 bg-gray-50">
@@ -110,10 +100,11 @@ export function FDCalculator() {
                         <div className="mt-12 space-y-4">
                             <button
                                 onClick={downloadReport}
-                                className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md"
+                                disabled={isExporting}
+                                className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Download className="w-5 h-5" />
-                                Download PDF
+                                {isExporting ? <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin" /> : <Download className="w-5 h-5" />}
+                                {isExporting ? 'Generating...' : 'Download PDF'}
                             </button>
                             <button className="w-full bg-[#1e3a8a] text-white py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-blue-900/10">
                                 Open FD Account <ArrowRight className="w-5 h-5" />

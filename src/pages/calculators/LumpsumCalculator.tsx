@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IndianRupee, PiggyBank, Download, ArrowRight, TrendingUp, Calendar, PieChart as PieChartIcon } from 'lucide-react';
+import { IndianRupee, PiggyBank, Download, ArrowRight, TrendingUp, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { PageHeader } from '../../components/PageHeader';
@@ -71,7 +71,9 @@ const LumpsumCalculator: React.FC = () => {
         title="Lumpsum"
         highlightedText="Calculator"
         subtitle="Estimate returns on your one-time lumpsum investments in mutual funds"
-        icon={<PiggyBank className="w-16 h-16 text-[#0d9488]" />}
+        image="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1920&auto=format&fit=crop&q=80"
+        badge="One-Time Investment"
+        icon={<PiggyBank className="w-4 h-4 text-white/80" />}
       />
 
       <div className="container mx-auto px-4 py-12">

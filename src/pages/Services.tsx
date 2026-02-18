@@ -77,7 +77,9 @@ export function Services() {
         title="Our"
         highlightedText="Services"
         subtitle="Comprehensive financial solutions tailored to your investment goals and life stages"
-        icon={<Briefcase className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1920&auto=format&fit=crop&q=80"
+        badge="What We Offer"
+        icon={<Briefcase className="w-4 h-4 text-white/80" />}
       />
 
       <section className="py-20" ref={ref}>

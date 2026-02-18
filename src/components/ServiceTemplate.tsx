@@ -15,16 +15,20 @@ interface ServiceTemplateProps {
   whyItMatters: string[];
   howWeHelp: string[];
   faqs: FAQ[];
+  /** Optional hero image URL — defaults to a finance/business photo */
+  image?: string;
 }
 
-export function ServiceTemplate({ title, icon: Icon, description, whoIsItFor, whyItMatters, howWeHelp, faqs }: ServiceTemplateProps) {
+export function ServiceTemplate({ title, icon: Icon, description, whoIsItFor, whyItMatters, howWeHelp, faqs, image }: ServiceTemplateProps) {
+  const heroImage = image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1920&auto=format&fit=crop&q=80';
   return (
     <div>
       <PageHeader
         title={title.split(' ').slice(0, -1).join(' ') || title}
         highlightedText={title.split(' ').slice(-1)[0] || ''}
         subtitle={description}
-        icon={<Icon className="w-16 h-16 text-teal-600" />}
+        image={heroImage}
+        icon={<Icon className="w-4 h-4 text-white/80" />}
       />
 
       {/* Who Is It For */}

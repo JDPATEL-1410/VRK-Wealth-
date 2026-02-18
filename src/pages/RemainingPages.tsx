@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, MapPin, Phone, Mail, Lock, Shield, TrendingUp, Search, Filter, RefreshCcw, Download, Info, CheckCircle2 } from 'lucide-react';
+import { BookOpen, MapPin, Phone, Mail, Lock, Shield, TrendingUp, Search, Filter, RefreshCcw, Info, CheckCircle2 } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -102,7 +102,9 @@ export function KnowledgeHub() {
         title="Knowledge"
         highlightedText="Hub"
         subtitle="Real-time financial intelligence. Only today's most critical market updates and expert analysis."
-        icon={<BookOpen className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1920&auto=format&fit=crop&q=80"
+        badge="Insights & Analysis"
+        icon={<BookOpen className="w-4 h-4 text-white/80" />}
       />
 
       <section className="py-12 md:py-20">
@@ -127,8 +129,8 @@ export function KnowledgeHub() {
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${selectedCategory === cat
-                        ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30'
-                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/30'
+                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                       }`}
                   >
                     {cat}
@@ -268,144 +270,184 @@ export function Contact() {
     email: '',
     city: '',
     goal: '',
+    message: '',
     consent: false
   });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Thank you for your interest! We will contact you soon.');
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 5000);
   };
 
   return (
-    <div>
-      <PageHeader
-        title="Contact"
-        highlightedText="Us"
-        subtitle="Get in touch with our expert team for personalized financial guidance and support"
-        icon={<Mail className="w-16 h-16 text-teal-600" />}
-      />
+    <div className="bg-white">
+      {/* Hero */}
+      <div className="relative h-64 md:h-80 overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&auto=format&fit=crop&q=80"
+          alt="Contact us"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a8a]/90 to-[#0d9488]/80" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 border border-white/20 rounded-full mb-4">
+            <Mail className="w-4 h-4 text-white/80" />
+            <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Get In Touch</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-3">Contact <span className="text-[#d4af37]">Us</span></h1>
+          <p className="text-white/80 text-lg max-w-xl">Get personalized financial guidance from our expert team</p>
+        </div>
+      </div>
 
-      <section className="py-16">
+      {/* Quick contact cards */}
+      <div className="container mx-auto px-4 -mt-8 relative z-10 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          {[
+            { icon: Phone, label: 'Call Us', value: '+91 98765 43210', sub: 'Mon–Sat: 9AM–6PM', href: 'tel:+919876543210', color: 'bg-blue-600' },
+            { icon: Mail, label: 'Email Us', value: 'connect@vrkwealth.in', sub: 'Reply within 24 hours', href: 'mailto:connect@vrkwealth.in', color: 'bg-teal-600' },
+            { icon: MapPin, label: 'Visit Us', value: 'Mumbai, Maharashtra', sub: 'India', href: '#', color: 'bg-purple-600' },
+          ].map((item, i) => (
+            <a key={i} href={item.href} className="group bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex items-center gap-4 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+              <div className={`w-12 h-12 ${item.color} rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform`}>
+                <item.icon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.label}</p>
+                <p className="font-black text-slate-900 text-sm">{item.value}</p>
+                <p className="text-xs text-slate-500">{item.sub}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <section className="py-8 pb-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            <div>
-              <h2 className="text-3xl font-bold text-[#1e3a8a] mb-6">Send Us a Message</h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0d9488] focus:border-transparent"
-                  />
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 max-w-6xl mx-auto">
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Mobile Number *</label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.mobile}
-                    onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0d9488] focus:border-transparent"
-                  />
-                </div>
+            {/* Form */}
+            <div className="lg:col-span-3">
+              <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 md:p-10">
+                <h2 className="text-2xl font-black text-[#1e3a8a] mb-2">Send Us a Message</h2>
+                <p className="text-slate-500 text-sm mb-8">Fill in your details and we'll get back to you within 24 hours.</p>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0d9488] focus:border-transparent"
-                  />
-                </div>
+                {submitted && (
+                  <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                    <p className="text-green-800 font-semibold text-sm">Thank you! We'll contact you soon.</p>
+                  </div>
+                )}
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
-                  <input
-                    type="text"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0d9488] focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Your Financial Goal</label>
-                  <select
-                    value={formData.goal}
-                    onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0d9488] focus:border-transparent"
-                  >
-                    <option value="">Select a goal</option>
-                    <option value="retirement">Retirement Planning</option>
-                    <option value="education">Children's Education</option>
-                    <option value="home">Home Purchase</option>
-                    <option value="wealth">Wealth Creation</option>
-                    <option value="tax">Tax Planning</option>
-                    <option value="insurance">Insurance</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                <div className="flex items-start gap-2">
-                  <input
-                    type="checkbox"
-                    required
-                    checked={formData.consent}
-                    onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-                    className="mt-1"
-                  />
-                  <label className="text-sm text-gray-600">
-                    I consent to VRK Wealth contacting me regarding investment opportunities and financial advisory services *
-                  </label>
-                </div>
-
-                <button type="submit" className="w-full bg-[#d4af37] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#b8941f] transition">
-                  Submit Inquiry
-                </button>
-              </form>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-widest">Full Name *</label>
+                      <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="Your full name"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0d9488]/20 focus:border-[#0d9488] outline-none transition-all text-sm bg-slate-50 focus:bg-white" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-widest">Mobile Number *</label>
+                      <input type="tel" required value={formData.mobile} onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                        placeholder="+91 XXXXX XXXXX"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0d9488]/20 focus:border-[#0d9488] outline-none transition-all text-sm bg-slate-50 focus:bg-white" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-widest">Email Address *</label>
+                      <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        placeholder="your@email.com"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0d9488]/20 focus:border-[#0d9488] outline-none transition-all text-sm bg-slate-50 focus:bg-white" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-widest">City</label>
+                      <input type="text" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                        placeholder="Your city"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0d9488]/20 focus:border-[#0d9488] outline-none transition-all text-sm bg-slate-50 focus:bg-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-widest">Your Financial Goal</label>
+                    <select value={formData.goal} onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
+                      className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0d9488]/20 focus:border-[#0d9488] outline-none transition-all text-sm bg-slate-50 focus:bg-white">
+                      <option value="">Select a goal</option>
+                      <option value="retirement">Retirement Planning</option>
+                      <option value="education">Children's Education</option>
+                      <option value="home">Home Purchase</option>
+                      <option value="wealth">Wealth Creation</option>
+                      <option value="tax">Tax Planning</option>
+                      <option value="insurance">Insurance</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-widest">Message</label>
+                    <textarea value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      placeholder="Tell us more about your financial goals..."
+                      rows={4}
+                      className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0d9488]/20 focus:border-[#0d9488] outline-none transition-all text-sm bg-slate-50 focus:bg-white resize-none" />
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <input type="checkbox" required id="consent" checked={formData.consent} onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
+                      className="mt-1 w-4 h-4 accent-[#0d9488]" />
+                    <label htmlFor="consent" className="text-xs text-slate-600 leading-relaxed">
+                      I consent to VRK Wealth contacting me regarding investment opportunities and financial advisory services *
+                    </label>
+                  </div>
+                  <button type="submit" className="w-full bg-gradient-to-r from-[#1e3a8a] to-[#0d9488] text-white px-8 py-4 rounded-2xl font-black text-base shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+                    Submit Inquiry →
+                  </button>
+                </form>
+              </div>
             </div>
 
-            <div>
-              <h2 className="text-3xl font-bold text-[#1e3a8a] mb-6">Get In Touch</h2>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
-                  <MapPin className="text-[#0d9488] flex-shrink-0" size={24} />
+            {/* Sidebar */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Image */}
+              <div className="rounded-3xl overflow-hidden shadow-xl h-52">
+                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&auto=format&fit=crop&q=80" alt="Our team" className="w-full h-full object-cover" />
+              </div>
+
+              {/* WhatsApp */}
+              <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-3xl p-6 text-white shadow-xl">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <Phone className="w-5 h-5" />
+                  </div>
                   <div>
-                    <h3 className="font-bold text-[#1e3a8a] mb-2">Office Address</h3>
-                    <p className="text-gray-600">123 Financial District<br />Ahmedabad, Gujarat 380001<br />India</p>
+                    <h3 className="font-black text-lg">WhatsApp Us</h3>
+                    <p className="text-green-100 text-xs">Quick response guaranteed</p>
                   </div>
                 </div>
+                <p className="text-green-100 text-sm mb-4">Get instant answers to your investment queries via WhatsApp.</p>
+                <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer"
+                  className="block w-full bg-white text-green-700 py-3 rounded-2xl font-black text-center text-sm hover:bg-green-50 transition-colors shadow-lg">
+                  Chat on WhatsApp →
+                </a>
+              </div>
 
-                <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
-                  <Phone className="text-[#0d9488] flex-shrink-0" size={24} />
-                  <div>
-                    <h3 className="font-bold text-[#1e3a8a] mb-2">Phone</h3>
-                    <p className="text-gray-600">+91 98765 43210</p>
-                    <p className="text-sm text-gray-500">Mon-Sat: 9:00 AM - 6:00 PM</p>
+              {/* Office hours */}
+              <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
+                <h3 className="font-black text-slate-900 mb-4 flex items-center gap-2">
+                  <div className="w-8 h-8 bg-[#1e3a8a] rounded-lg flex items-center justify-center">
+                    <Info className="w-4 h-4 text-white" />
                   </div>
-                </div>
-
-                <div className="flex items-start gap-4 bg-gray-50 p-6 rounded-lg">
-                  <Mail className="text-[#0d9488] flex-shrink-0" size={24} />
-                  <div>
-                    <h3 className="font-bold text-[#1e3a8a] mb-2">Email</h3>
-                    <p className="text-gray-600">info@vrkwealth.com</p>
-                    <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-[#1e3a8a] to-[#0d9488] text-white p-6 rounded-lg">
-                  <h3 className="font-bold text-xl mb-3">WhatsApp Us</h3>
-                  <p className="mb-4">Quick response via WhatsApp</p>
-                  <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
-                    Chat on WhatsApp
-                  </button>
+                  Office Hours
+                </h3>
+                <div className="space-y-2">
+                  {[
+                    { day: 'Monday – Friday', time: '9:00 AM – 6:00 PM' },
+                    { day: 'Saturday', time: '9:00 AM – 2:00 PM' },
+                    { day: 'Sunday', time: 'Closed' },
+                  ].map((row, i) => (
+                    <div key={i} className="flex justify-between items-center py-2 border-b border-slate-200 last:border-0">
+                      <span className="text-sm font-semibold text-slate-700">{row.day}</span>
+                      <span className="text-sm text-slate-500">{row.time}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -424,7 +466,9 @@ export function ClientLogin() {
         title="Client"
         highlightedText="Login"
         subtitle="Access your portfolio and investment details securely"
-        icon={<Lock className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1920&auto=format&fit=crop&q=80"
+        badge="Secure Portal"
+        icon={<Lock className="w-4 h-4 text-white/80" />}
       />
 
       <section className="py-16">
@@ -476,7 +520,9 @@ export function Disclaimer() {
       <PageHeader
         title="Disclaimer"
         subtitle="Important information about our services and regulatory disclosures"
-        icon={<Shield className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1920&auto=format&fit=crop&q=80"
+        badge="Legal & Compliance"
+        icon={<Shield className="w-4 h-4 text-white/80" />}
       />
 
       <div className="py-16">
@@ -522,7 +568,9 @@ export function PrivacyPolicy() {
         title="Privacy"
         highlightedText="Policy"
         subtitle="How we collect, use, and protect your personal information"
-        icon={<Lock className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&auto=format&fit=crop&q=80"
+        badge="Your Data, Protected"
+        icon={<Lock className="w-4 h-4 text-white/80" />}
       />
 
       <div className="py-16">
@@ -573,7 +621,9 @@ export function RiskDisclosure() {
         title="Risk"
         highlightedText="Disclosure"
         subtitle="Understanding the risks associated with various investment products"
-        icon={<TrendingUp className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1920&auto=format&fit=crop&q=80"
+        badge="Investor Awareness"
+        icon={<TrendingUp className="w-4 h-4 text-white/80" />}
       />
 
       <div className="py-16">
@@ -626,7 +676,9 @@ export function CommissionDisclosure() {
         title="Commission"
         highlightedText="Disclosure"
         subtitle="Complete transparency regarding our compensation and fee structure"
-        icon={<Shield className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1920&auto=format&fit=crop&q=80"
+        badge="Full Transparency"
+        icon={<Shield className="w-4 h-4 text-white/80" />}
       />
 
       <div className="py-16 md:py-24">
@@ -736,7 +788,9 @@ export function KycAml() {
         title="KYC & AML"
         highlightedText="Policy"
         subtitle="Our commitment to regulatory compliance and money laundering prevention"
-        icon={<Shield className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1920&auto=format&fit=crop&q=80"
+        badge="Regulatory Compliance"
+        icon={<Shield className="w-4 h-4 text-white/80" />}
       />
 
       <div className="py-16">

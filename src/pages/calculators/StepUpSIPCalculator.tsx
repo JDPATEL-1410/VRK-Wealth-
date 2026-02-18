@@ -80,7 +80,9 @@ export function StepUpSIPCalculator() {
                 title="Step-Up SIP"
                 highlightedText="Calculator"
                 subtitle="Calculate returns with annual increment in your SIP amount for accelerated wealth creation"
-                icon={<TrendingUp className="w-16 h-16 text-[#0d9488]" />}
+                image="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1920&auto=format&fit=crop&q=80"
+                badge="Grow With Your Income"
+                icon={<TrendingUp className="w-4 h-4 text-white/80" />}
             />
 
             <div className="container mx-auto px-4 py-12">

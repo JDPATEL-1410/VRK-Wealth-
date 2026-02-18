@@ -156,7 +156,9 @@ export function Calculators() {
         title="Financial"
         highlightedText="Calculators"
         subtitle="Plan your financial journey with our comprehensive suite of calculators. Make informed investment decisions with accurate projections."
-        icon={<Calculator className="w-16 h-16 text-teal-600" />}
+        image="https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=1920&auto=format&fit=crop&q=80"
+        badge="Plan Your Future"
+        icon={<Calculator className="w-4 h-4 text-white/80" />}
       />
 
       {/* Calculators Grid */}

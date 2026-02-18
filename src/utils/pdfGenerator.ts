@@ -136,12 +136,26 @@ export const generatePDF = async (elementId: string, filename: string): Promise<
         if (!element) throw new Error(`Element #${elementId} not found`);
 
         canvas = await html2canvas(element, {
-            scale: 1.5,
+            scale: 2, // Higher scale for better print quality (300 DPI target)
             useCORS: true,
             allowTaint: false,
             logging: false,
             backgroundColor: '#ffffff',
+            windowWidth: 1200, // Force desktop viewport width during capture
             onclone: (_clonedDoc, clonedElement) => {
+                // hide interactive elements in PDF (buttons, links, etc.)
+                clonedElement.querySelectorAll('button, a, .no-pdf').forEach(el => {
+                    (el as HTMLElement).style.display = 'none';
+                });
+
+                // Force a "desktop" container style on the cloned element
+                clonedElement.style.width = '1200px';
+                clonedElement.style.maxWidth = '1200px';
+                clonedElement.style.padding = '40px';
+                clonedElement.style.margin = '0 auto';
+                clonedElement.style.borderRadius = '0'; // Clean edges for PDF
+                clonedElement.style.boxShadow = 'none';
+
                 // Stamp computed (browser-resolved) colors from live → clone
                 stampComputedColorsOntoClone(element, clonedElement);
 

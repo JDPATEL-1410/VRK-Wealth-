@@ -33,7 +33,7 @@ const LumpsumCalculator: React.FC = () => {
     for (let year = 0; year <= period; year++) {
       const value = investment * Math.pow(1 + returnRate / 100, year);
       data.push({
-        year: `Year ${year}`,
+        year: `Y${year}`,
         value: Math.round(value),
         investment: investment,
         growth: Math.round(value - investment)
@@ -59,7 +59,7 @@ const LumpsumCalculator: React.FC = () => {
       await generatePDF('report-content', 'VRK-Wealth-Lumpsum-Report');
     } catch (error: any) {
       console.error('PDF Generation Error:', error);
-      alert(`Failed to generate PDF: ${error.message || 'Unknown error'}. If you are on mobile, please try from a desktop browser.`);
+      alert(`Failed to generate PDF: ${error.message || 'Unknown error'}`);
     } finally {
       setIsExporting(false);
     }
@@ -76,34 +76,34 @@ const LumpsumCalculator: React.FC = () => {
         icon={<PiggyBank className="w-4 h-4 text-white/80" />}
       />
 
-      <div className="container mx-auto px-4 py-12">
-        <div id="report-content" className="bg-white p-8 rounded-[3rem]">
-          {/* Report Branding Header */}
-          <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b-2 border-slate-100 pb-8 gap-4">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
+        <div id="report-content" className="bg-white p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-[2rem] lg:rounded-[3rem]">
+          {/* Report Header */}
+          <div className="mb-6 sm:mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b-2 border-slate-100 pb-5 gap-3">
             <div>
-              <h2 className="text-4xl font-black text-[#1e3a8a] mb-2 uppercase tracking-tight">Lumpsum Investment Report</h2>
-              <p className="text-slate-500 font-black uppercase tracking-[0.2em] text-xs">Projected growth for your one-time investment</p>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#1e3a8a] mb-1 uppercase tracking-tight">Lumpsum Investment Report</h2>
+              <p className="text-slate-500 font-black uppercase tracking-[0.15em] text-[10px] sm:text-xs">Projected growth for your one-time investment</p>
             </div>
-            <div className="bg-amber-50 px-6 py-3 rounded-2xl border border-amber-100">
-              <span className="text-amber-600 font-black text-sm uppercase">Growth Analysis</span>
+            <div className="bg-amber-50 px-4 py-2 rounded-xl border border-amber-100">
+              <span className="text-amber-600 font-black text-xs sm:text-sm uppercase">Growth Analysis</span>
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-5 sm:gap-8 max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100 h-fit"
+              className="bg-white rounded-xl sm:rounded-[2rem] shadow-lg sm:shadow-xl p-5 sm:p-8 border border-gray-100 h-fit"
             >
-              <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-2">
-                <IndianRupee className="w-6 h-6 text-[#1e3a8a]" />
+              <h2 className="text-lg sm:text-2xl font-black text-gray-900 mb-6 sm:mb-8 flex items-center gap-2">
+                <IndianRupee className="w-5 h-5 sm:w-6 sm:h-6 text-[#1e3a8a]" />
                 Investment Details
               </h2>
 
-              <div className="mb-10">
-                <div className="flex justify-between items-center mb-4">
-                  <label className="text-gray-700 font-bold">Investment Amount</label>
-                  <span className="text-2xl font-black text-[#1e3a8a] bg-blue-50 px-4 py-2 rounded-xl">{formatCurrency(investment)}</span>
+              <div className="mb-8 sm:mb-10">
+                <div className="flex justify-between items-center mb-3 sm:mb-4">
+                  <label className="text-gray-700 font-bold text-sm sm:text-base">Investment Amount</label>
+                  <span className="text-base sm:text-2xl font-black text-[#1e3a8a] bg-blue-50 px-3 py-1 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl">{formatCurrency(investment)}</span>
                 </div>
                 <input
                   type="range"
@@ -112,18 +112,18 @@ const LumpsumCalculator: React.FC = () => {
                   step="10000"
                   value={investment}
                   onChange={(e) => setInvestment(Number(e.target.value))}
-                  className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1e3a8a]"
+                  className="w-full h-2 sm:h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1e3a8a]"
                 />
-                <div className="flex justify-between text-[10px] text-gray-400 mt-2 font-black uppercase tracking-widest">
+                <div className="flex justify-between text-[9px] sm:text-[10px] text-gray-400 mt-2 font-black uppercase tracking-widest">
                   <span>10K</span>
                   <span>1 Cr</span>
                 </div>
               </div>
 
-              <div className="mb-10">
-                <div className="flex justify-between items-center mb-4">
-                  <label className="text-gray-700 font-bold">Investment Period</label>
-                  <span className="text-2xl font-black text-[#0d9488] bg-teal-50 px-4 py-2 rounded-xl">{period} Years</span>
+              <div className="mb-8 sm:mb-10">
+                <div className="flex justify-between items-center mb-3 sm:mb-4">
+                  <label className="text-gray-700 font-bold text-sm sm:text-base">Investment Period</label>
+                  <span className="text-base sm:text-2xl font-black text-[#0d9488] bg-teal-50 px-3 py-1 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl">{period} Years</span>
                 </div>
                 <input
                   type="range"
@@ -132,14 +132,14 @@ const LumpsumCalculator: React.FC = () => {
                   step="1"
                   value={period}
                   onChange={(e) => setPeriod(Number(e.target.value))}
-                  className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0d9488]"
+                  className="w-full h-2 sm:h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0d9488]"
                 />
               </div>
 
-              <div className="mb-10">
-                <div className="flex justify-between items-center mb-4">
-                  <label className="text-gray-700 font-bold">Expected Return (p.a.)</label>
-                  <span className="text-2xl font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl">{returnRate}%</span>
+              <div className="mb-8 sm:mb-10">
+                <div className="flex justify-between items-center mb-3 sm:mb-4">
+                  <label className="text-gray-700 font-bold text-sm sm:text-base">Expected Return (p.a.)</label>
+                  <span className="text-base sm:text-2xl font-black text-emerald-600 bg-emerald-50 px-3 py-1 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl">{returnRate}%</span>
                 </div>
                 <input
                   type="range"
@@ -148,40 +148,40 @@ const LumpsumCalculator: React.FC = () => {
                   step="0.5"
                   value={returnRate}
                   onChange={(e) => setReturnRate(Number(e.target.value))}
-                  className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                  className="w-full h-2 sm:h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100 flex flex-col justify-center text-center">
-                  <div className="text-[10px] text-[#1e3a8a] font-black uppercase tracking-widest mb-1">Investment</div>
-                  <div className="text-lg font-black text-[#1e3a8a]">{formatCurrency(result.totalInvestment)}</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                <div className="bg-blue-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-blue-100 flex flex-col justify-center text-center">
+                  <div className="text-[9px] sm:text-[10px] text-[#1e3a8a] font-black uppercase tracking-widest mb-1">Investment</div>
+                  <div className="text-sm sm:text-lg font-black text-[#1e3a8a]">{formatCurrency(result.totalInvestment)}</div>
                 </div>
-                <div className="bg-teal-50 rounded-2xl p-4 border border-teal-100 flex flex-col justify-center text-center">
-                  <div className="text-[10px] text-[#0d9488] font-black uppercase tracking-widest mb-1">Est. Returns</div>
-                  <div className="text-lg font-black text-[#0d9488]">{formatCurrency(result.estimatedReturns)}</div>
+                <div className="bg-teal-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-teal-100 flex flex-col justify-center text-center">
+                  <div className="text-[9px] sm:text-[10px] text-[#0d9488] font-black uppercase tracking-widest mb-1">Est. Returns</div>
+                  <div className="text-sm sm:text-lg font-black text-[#0d9488]">{formatCurrency(result.estimatedReturns)}</div>
                 </div>
-                <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100 flex flex-col justify-center text-center">
-                  <div className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Total Value</div>
-                  <div className="text-lg font-black text-emerald-600">{formatCurrency(result.totalValue)}</div>
+                <div className="bg-emerald-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-emerald-100 flex flex-col justify-center text-center">
+                  <div className="text-[9px] sm:text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Total Value</div>
+                  <div className="text-sm sm:text-lg font-black text-emerald-600">{formatCurrency(result.totalValue)}</div>
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <button
                   onClick={downloadReport}
                   disabled={isExporting}
-                  className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isExporting ? (
                     <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin"></div>
                   ) : (
-                    <Download className="w-5 h-5" />
+                    <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                   )}
                   {isExporting ? 'Generating...' : 'Download PDF'}
                 </button>
-                <button className="w-full bg-[#1e3a8a] text-white py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-blue-900/10">
-                  Start Investing <ArrowRight className="w-5 h-5" />
+                <button className="w-full bg-[#1e3a8a] text-white py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-blue-900/10">
+                  Start Investing <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
             </motion.div>
@@ -189,22 +189,22 @@ const LumpsumCalculator: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="space-y-6"
+              className="space-y-5 sm:space-y-6"
             >
-              <div className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100">
-                <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
-                  <TrendingUp className="w-6 h-6 text-[#1e3a8a]" />
+              <div className="bg-white rounded-xl sm:rounded-[2rem] shadow-lg sm:shadow-xl p-5 sm:p-8 border border-gray-100">
+                <h3 className="text-base sm:text-xl font-black text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-[#1e3a8a]" />
                   Wealth Composition
                 </h3>
-                <div className="h-[280px]">
+                <div className="h-[200px] sm:h-[280px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={pieData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={90}
+                        innerRadius={50}
+                        outerRadius={80}
                         paddingAngle={8}
                         dataKey="value"
                       >
@@ -213,18 +213,18 @@ const LumpsumCalculator: React.FC = () => {
                         ))}
                       </Pie>
                       <Tooltip formatter={(value: any) => formatCurrency(Number(value))} />
-                      <Legend verticalAlign="bottom" />
+                      <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: '11px' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100">
-                <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
-                  <Calendar className="w-6 h-6 text-[#0d9488]" />
+              <div className="bg-white rounded-xl sm:rounded-[2rem] shadow-lg sm:shadow-xl p-5 sm:p-8 border border-gray-100">
+                <h3 className="text-base sm:text-xl font-black text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
+                  <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-[#0d9488]" />
                   Growth Journey
                 </h3>
-                <div className="h-[280px]">
+                <div className="h-[200px] sm:h-[280px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={yearlyData}>
                       <defs>
@@ -234,13 +234,13 @@ const LumpsumCalculator: React.FC = () => {
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                      <XAxis dataKey="year" tick={{ fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} />
-                      <YAxis tickFormatter={(val) => formatCurrency(val)} tick={{ fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} />
+                      <XAxis dataKey="year" tick={{ fontSize: 9, fontWeight: 700 }} axisLine={false} tickLine={false} />
+                      <YAxis tickFormatter={(val) => formatCurrency(val)} tick={{ fontSize: 9, fontWeight: 700 }} axisLine={false} tickLine={false} width={60} />
                       <Tooltip
                         formatter={(value: any) => formatCurrency(Number(value))}
-                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}
+                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', fontSize: '11px' }}
                       />
-                      <Area type="monotone" dataKey="value" stroke="#0d9488" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
+                      <Area type="monotone" dataKey="value" stroke="#0d9488" strokeWidth={2} fillOpacity={1} fill="url(#colorValue)" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -251,27 +251,27 @@ const LumpsumCalculator: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-8 bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100 max-w-7xl mx-auto"
+            className="mt-6 sm:mt-8 bg-white rounded-xl sm:rounded-[2rem] shadow-lg sm:shadow-xl p-4 sm:p-8 border border-gray-100 max-w-7xl mx-auto"
           >
-            <h3 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-2">
-              <Calendar className="w-7 h-7 text-[#0d9488]" />
+            <h3 className="text-lg sm:text-2xl font-black text-gray-900 mb-4 sm:mb-8 flex items-center gap-2">
+              <Calendar className="w-5 h-5 sm:w-7 sm:h-7 text-[#0d9488]" />
               Detailed Projections
             </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
+            <div className="overflow-x-auto -mx-1">
+              <table className="w-full text-left min-w-[400px]">
                 <thead>
                   <tr className="border-b-2 border-gray-100">
-                    <th className="py-4 px-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Investment Year</th>
-                    <th className="py-4 px-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Portfolio Value</th>
-                    <th className="py-4 px-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Wealth Created</th>
+                    <th className="py-3 sm:py-4 px-3 sm:px-6 text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Investment Year</th>
+                    <th className="py-3 sm:py-4 px-3 sm:px-6 text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Portfolio Value</th>
+                    <th className="py-3 sm:py-4 px-3 sm:px-6 text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Wealth Created</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {yearlyData.map((data, index) => (
                     <tr key={index} className="hover:bg-gray-50 transition-colors group">
-                      <td className="py-4 px-6 font-bold text-gray-600">{data.year}</td>
-                      <td className="py-4 px-6 font-black text-[#1e3a8a]">{formatCurrency(data.value)}</td>
-                      <td className="py-4 px-6 font-black text-[#0d9488] text-right group-hover:scale-105 transition-transform">
+                      <td className="py-2 sm:py-4 px-3 sm:px-6 font-bold text-gray-600 text-sm">{data.year}</td>
+                      <td className="py-2 sm:py-4 px-3 sm:px-6 font-black text-[#1e3a8a] text-sm">{formatCurrency(data.value)}</td>
+                      <td className="py-2 sm:py-4 px-3 sm:px-6 font-black text-[#0d9488] text-right text-sm">
                         {data.growth <= 0 ? '-' : formatCurrency(data.growth)}
                       </td>
                     </tr>
@@ -282,13 +282,13 @@ const LumpsumCalculator: React.FC = () => {
           </motion.div>
         </div>
 
-        <div className="max-w-7xl mx-auto mt-12">
-          <div className="bg-amber-50 border-l-4 border-amber-400 rounded-2xl p-8 shadow-sm">
-            <h4 className="flex items-center gap-2 font-black text-amber-900 mb-3">
-              <PiggyBank className="w-5 h-5" />
+        <div className="max-w-7xl mx-auto mt-6 sm:mt-12">
+          <div className="bg-amber-50 border-l-4 border-amber-400 rounded-xl sm:rounded-2xl p-5 sm:p-8 shadow-sm">
+            <h4 className="flex items-center gap-2 font-black text-amber-900 mb-2 sm:mb-3 text-sm sm:text-base">
+              <PiggyBank className="w-4 h-4 sm:w-5 sm:h-5" />
               Crucial Investor Disclaimer
             </h4>
-            <p className="text-sm text-gray-700 font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">
               Mutual Fund investments are subject to market risks. Read all scheme related documents carefully before investing.
               The historical performance of any scheme is not necessarily indicative of future results. These calculations are for
               illustration only and do not constitute a guarantee of returns.

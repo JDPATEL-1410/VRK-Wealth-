@@ -4,6 +4,12 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Link } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
 import { generatePDF } from '../../utils/pdfGenerator';
+import { motion } from 'framer-motion';
+
+const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+};
 
 export function DelayCostCalculator() {
     const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
@@ -48,13 +54,13 @@ export function DelayCostCalculator() {
     const chartData = [
         {
             name: 'Start Today',
-            'Total Value': result.futureValueNow,
-            'Total Invested': result.totalInvestedNow,
+            'Full Wealth': result.futureValueNow,
+            'Capital': result.totalInvestedNow,
         },
         {
-            name: `After ${delayYears}Y delay`,
-            'Total Value': result.futureValueDelayed,
-            'Total Invested': result.totalInvestedDelayed,
+            name: `After ${delayYears}Y Delay`,
+            'Full Wealth': result.futureValueDelayed,
+            'Capital': result.totalInvestedDelayed,
         }
     ];
 
@@ -90,74 +96,92 @@ export function DelayCostCalculator() {
                 icon={<Clock className="w-4 h-4 text-white/80" />}
             />
 
-            <div className="container mx-auto px-4 py-12">
-                <div id="report-content" className="bg-gray-50 p-4">
-                    <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-                        <div className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100 flex flex-col items-center text-center">
-                            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-6 border-4 border-white shadow-lg animate-pulse">
-                                <AlertCircle className="w-10 h-10 text-red-600" />
-                            </div>
-                            <h3 className="text-xl font-black text-gray-400 uppercase tracking-widest mb-2">Total Wealth Sacrifice</h3>
-                            <p className="text-5xl font-black text-red-600 mb-6">{formatCurrency(result.costOfDelay)}</p>
+            <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-16">
+                <div id="report-content" className="bg-white p-4 sm:p-6 lg:p-10 rounded-2xl sm:rounded-[3rem] shadow-sm">
+                    {/* Branded Header */}
+                    <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end border-b-2 border-slate-100 pb-6 gap-3">
+                        <div>
+                            <h2 className="text-2xl sm:text-4xl font-black text-[#1e3a8a] mb-1 uppercase tracking-tight">The Cost of Inaction</h2>
+                            <p className="text-slate-500 font-black uppercase tracking-[0.15em] text-[10px] sm:text-xs">Financial impact of delaying your investment start</p>
+                        </div>
+                        <div className="bg-red-50 px-4 py-2 rounded-xl border border-red-100">
+                            <span className="text-red-600 font-black text-xs sm:text-sm uppercase">Time is Money</span>
+                        </div>
+                    </div>
 
-                            <div className="bg-red-50 p-6 rounded-2xl border border-red-100 w-full mb-8">
-                                <p className="text-red-900 font-bold leading-relaxed">
-                                    A mere <span className="text-2xl font-black">{delayYears} Year</span> delay results in losing
-                                    <span className="text-2xl font-black block mt-2">{result.percentageLoss}% of your potential wealth</span>
+                    <div className="grid lg:grid-cols-2 gap-6 sm:gap-12 max-w-7xl mx-auto">
+                        {/* High Impact Result Card */}
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={fadeInUp}
+                            className="bg-white rounded-xl sm:rounded-[2.5rem] shadow-lg sm:shadow-2xl p-6 sm:p-10 border border-gray-100 flex flex-col items-center text-center justify-center"
+                        >
+                            <div className="w-14 h-14 sm:w-20 sm:h-20 bg-red-100 rounded-full flex items-center justify-center mb-4 sm:mb-6 border-4 border-white shadow-lg animate-pulse">
+                                <AlertCircle className="w-8 h-8 sm:w-10 sm:h-10 text-red-600" />
+                            </div>
+                            <h3 className="text-xs sm:text-xl font-black text-gray-400 uppercase tracking-widest mb-1 sm:mb-2 text-center">Total Wealth Sacrifice</h3>
+                            <p className="text-3xl sm:text-6xl font-black text-red-600 mb-4 sm:mb-8 text-center">{formatCurrency(result.costOfDelay)}</p>
+
+                            <div className="bg-red-50 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-red-100 w-full mb-6 sm:mb-8">
+                                <p className="text-red-900 font-bold leading-relaxed text-sm sm:text-lg text-center">
+                                    A mere <span className="font-black">{delayYears} Year</span> delay results in losing
+                                    <span className="font-black block mt-1 sm:mt-2 text-xl sm:text-2xl">{result.percentageLoss}% of your potential wealth</span>
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full">
                                 <button
                                     onClick={downloadReport}
                                     disabled={isExporting}
-                                    className="bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="bg-white text-[#1e3a8a] border-2 border-[#1e3a8a] py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {isExporting ? <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin" /> : <Download className="w-5 h-5" />}
+                                    {isExporting ? <div className="w-5 h-5 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin" /> : <Download className="w-4 h-4 sm:w-5 sm:h-5" />}
                                     {isExporting ? 'Generating...' : 'Download PDF'}
                                 </button>
-                                <Link to="/contact" className="bg-[#1e3a8a] text-white py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl shadow-blue-900/10">
-                                    Start Now <ArrowRight className="w-5 h-5" />
+                                <Link to="/contact" className="bg-[#1e3a8a] text-white py-3 sm:py-4 rounded-xl font-black text-sm sm:text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-xl text-center">
+                                    Start Now <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </Link>
                             </div>
-                        </div>
+                        </motion.div>
 
-                        <div className="space-y-6">
-                            <div className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100">
-                                <h3 className="text-xl font-black text-gray-900 mb-8 flex items-center">
-                                    <TrendingUp className="w-6 h-6 mr-2 text-[#1e3a8a]" />
-                                    Cost Analysis Chart
+                        {/* Analysis & Controls */}
+                        <div className="space-y-6 sm:space-y-8">
+                            <motion.div variants={fadeInUp} initial="hidden" animate="visible" className="bg-white rounded-xl sm:rounded-[2rem] shadow-lg sm:shadow-xl p-5 sm:p-8 border border-gray-100">
+                                <h3 className="text-base sm:text-xl font-black text-gray-900 mb-6 sm:mb-8 flex items-center">
+                                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-[#1e3a8a]" />
+                                    Wealth Impact Comparison
                                 </h3>
-                                <div className="h-[280px] w-full">
+                                <div className="h-[200px] sm:h-[280px] w-full">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                        <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                            <XAxis dataKey="name" fontSize={11} fontWeight={700} tickLine={false} axisLine={false} stroke="#94a3b8" />
-                                            <YAxis fontSize={10} fontWeight={700} tickLine={false} axisLine={false} stroke="#94a3b8" tickFormatter={(value) => formatCurrency(value)} />
+                                            <XAxis dataKey="name" fontSize={9} fontWeight={700} tickLine={false} axisLine={false} stroke="#94a3b8" />
+                                            <YAxis fontSize={9} fontWeight={700} tickLine={false} axisLine={false} stroke="#94a3b8" tickFormatter={(value) => formatCurrency(value)} width={60} />
                                             <Tooltip
                                                 cursor={{ fill: '#f1f5f9' }}
-                                                formatter={(value) => formatCurrency(Number(value))}
-                                                contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}
+                                                formatter={(value: any) => formatCurrency(Number(value))}
+                                                contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', fontSize: '11px' }}
                                             />
-                                            <Legend iconType="circle" />
-                                            <Bar name="Principal Invested" dataKey="Total Invested" fill="#94a3b8" radius={[8, 8, 0, 0]} barSize={50} />
-                                            <Bar name="Maturity Value" dataKey="Total Value" fill="#1e3a8a" radius={[8, 8, 0, 0]} barSize={50} />
+                                            <Legend iconType="circle" wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                                            <Bar name="Capital" dataKey="Capital" fill="#94a3b8" radius={[6, 6, 0, 0]} barSize={40} />
+                                            <Bar name="Full Wealth" dataKey="Full Wealth" fill="#1e3a8a" radius={[6, 6, 0, 0]} barSize={40} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
-                            </div>
+                            </motion.div>
 
-                            <div className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100 h-fit">
-                                <h3 className="text-xl font-black text-gray-900 mb-8 flex items-center">
-                                    <Clock className="w-6 h-6 mr-2 text-[#1e3a8a]" />
-                                    Investment Variables
+                            <motion.div variants={fadeInUp} initial="hidden" animate="visible" className="bg-white rounded-xl sm:rounded-[2rem] shadow-lg sm:shadow-xl p-5 sm:p-8 border border-gray-100 h-fit">
+                                <h3 className="text-base sm:text-xl font-black text-gray-900 mb-6 sm:mb-8 flex items-center">
+                                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-[#1e3a8a]" />
+                                    Adjust Parameters
                                 </h3>
 
-                                <div className="space-y-8">
+                                <div className="space-y-6 sm:space-y-8">
                                     <div>
-                                        <div className="flex justify-between items-center mb-4">
-                                            <label className="text-gray-600 font-bold">Planned Monthly Savings</label>
-                                            <span className="text-xl font-black text-[#1e3a8a]">{formatCurrency(monthlyInvestment)}</span>
+                                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                                            <label className="text-gray-600 font-bold text-xs sm:text-base">Monthly Savings</label>
+                                            <span className="text-base sm:text-xl font-black text-[#1e3a8a] bg-blue-50 px-3 py-1 rounded-lg">{formatCurrency(monthlyInvestment)}</span>
                                         </div>
                                         <input type="range" min="1000" max="200000" step="1000" value={monthlyInvestment}
                                             onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
@@ -165,62 +189,63 @@ export function DelayCostCalculator() {
                                     </div>
 
                                     <div>
-                                        <div className="flex justify-between items-center mb-4">
-                                            <label className="text-red-600 font-bold">Delay Duration</label>
-                                            <span className="text-xl font-black text-red-600">{delayYears} Years</span>
+                                        <div className="flex justify-between items-center mb-3 sm:mb-4">
+                                            <label className="text-red-600 font-bold text-xs sm:text-base">Delay Duration</label>
+                                            <span className="text-base sm:text-xl font-black text-red-600 bg-red-50 px-3 py-1 rounded-lg">{delayYears} Years</span>
                                         </div>
                                         <input type="range" min="1" max={period - 1} step="1" value={delayYears}
                                             onChange={(e) => setDelayYears(Number(e.target.value))}
                                             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-600" />
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50">
+                                    <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-50">
                                         <div>
-                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Return (%)</label>
+                                            <label className="block text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Return (%)</label>
                                             <input type="number" value={returnRate} onChange={(e) => setReturnRate(Number(e.target.value))}
-                                                className="w-full p-3 bg-gray-50 rounded-xl font-black text-[#1e3a8a] border-none" />
+                                                className="w-full p-2 sm:p-3 bg-gray-50 rounded-xl font-black text-[#1e3a8a] border-none text-center sm:text-left" />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Horizon (Yrs)</label>
+                                            <label className="block text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Horizon (Yrs)</label>
                                             <input type="number" value={period} onChange={(e) => setPeriod(Number(e.target.value))}
-                                                className="w-full p-3 bg-gray-50 rounded-xl font-black text-[#0d9488] border-none" />
+                                                className="w-full p-2 sm:p-3 bg-gray-50 rounded-xl font-black text-[#0d9488] border-none text-center sm:text-left" />
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-12 bg-white rounded-[2rem] shadow-xl p-12 border border-gray-100 max-w-7xl mx-auto">
-                    <h2 className="text-3xl font-black text-gray-900 mb-10 text-center">The Invisible Cost of "Tomorrow"</h2>
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <div className="p-8 bg-blue-50/50 rounded-3xl border border-blue-100 shadow-sm relative group hover:-translate-y-2 transition-transform">
-                            <div className="w-12 h-12 bg-[#1e3a8a] rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-500/30">
-                                <TrendingUp size={24} />
+                {/* Educational Cards */}
+                <div className="mt-8 sm:mt-16 bg-white rounded-xl sm:rounded-[2rem] shadow-xl p-6 sm:p-12 border border-gray-100 max-w-7xl mx-auto">
+                    <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mb-8 sm:mb-12 text-center">The Invisible Cost of "Tomorrow"</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8">
+                        <div className="p-6 sm:p-8 bg-blue-50/50 rounded-2xl sm:rounded-3xl border border-blue-100 shadow-sm hover:-translate-y-1 transition-transform">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#1e3a8a] rounded-xl flex items-center justify-center text-white mb-4 sm:mb-6 shadow-lg shadow-blue-500/30">
+                                <TrendingUp size={20} className="sm:w-6 sm:h-6" />
                             </div>
-                            <h3 className="text-[#1e3a8a] font-black text-xl mb-3">Power of Endings</h3>
-                            <p className="text-gray-600 text-sm font-medium leading-relaxed">The exponential growth of compounding happens in the final years. By delaying your start, you essentially delete the most profitable years of your entire investment journey.</p>
+                            <h3 className="text-[#1e3a8a] font-black text-lg sm:text-xl mb-3">Power of Endings</h3>
+                            <p className="text-gray-600 text-[11px] sm:text-sm font-medium leading-relaxed">The exponential growth of compounding happens in the final years. By delaying your start, you essentially delete the most profitable years of your entire investment journey.</p>
                         </div>
-                        <div className="p-8 bg-teal-50/50 rounded-3xl border border-teal-100 shadow-sm relative group hover:-translate-y-2 transition-transform">
-                            <div className="w-12 h-12 bg-[#0d9488] rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-teal-500/30">
-                                <AlertCircle size={24} />
+                        <div className="p-6 sm:p-8 bg-teal-50/50 rounded-2xl sm:rounded-3xl border border-teal-100 shadow-sm hover:-translate-y-1 transition-transform">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#0d9488] rounded-xl flex items-center justify-center text-white mb-4 sm:mb-6 shadow-lg shadow-teal-500/30">
+                                <AlertCircle size={20} className="sm:w-6 sm:h-6" />
                             </div>
-                            <h3 className="text-[#0d9488] font-black text-xl mb-3">Escalating Effort</h3>
-                            <p className="text-gray-600 text-sm font-medium leading-relaxed">To achieve the same goal after a 5-year delay, you don't just invest for 5 years less; you may need to double your monthly contribution to catch up.</p>
+                            <h3 className="text-[#0d9488] font-black text-lg sm:text-xl mb-3">Escalating Effort</h3>
+                            <p className="text-gray-600 text-[11px] sm:text-sm font-medium leading-relaxed">To achieve the same goal after a 5-year delay, you don't just invest for 5 years less; you may need to double your monthly contribution to catch up.</p>
                         </div>
-                        <div className="p-8 bg-amber-50/50 rounded-3xl border border-amber-100 shadow-sm relative group hover:-translate-y-2 transition-transform">
-                            <div className="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-amber-500/30">
-                                <Clock size={24} />
+                        <div className="p-6 sm:p-8 bg-amber-50/50 rounded-2xl sm:rounded-3xl border border-amber-100 shadow-sm hover:-translate-y-1 transition-transform">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white mb-4 sm:mb-6 shadow-lg shadow-amber-500/30">
+                                <Clock size={20} className="sm:w-6 sm:h-6" />
                             </div>
-                            <h3 className="text-amber-900 font-black text-xl mb-3">Time Over Capital</h3>
-                            <p className="text-gray-600 text-sm font-medium leading-relaxed">In wealth creation, time is more powerful than capital. Starting early with a small amount often beats starting late with a much larger monthly commitment.</p>
+                            <h3 className="text-amber-900 font-black text-lg sm:text-xl mb-3">Time Over Capital</h3>
+                            <p className="text-gray-600 text-[11px] sm:text-sm font-medium leading-relaxed">In wealth creation, time is more powerful than capital. Starting early with a small amount often beats starting late with a much larger monthly commitment.</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-12 text-center max-w-4xl mx-auto">
-                    <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.3em] leading-relaxed">
+                <div className="mt-8 sm:mt-12 text-center max-w-4xl mx-auto">
+                    <p className="text-[8px] sm:text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] leading-relaxed">
                         Compounding returns are theoretical and market performance is unpredictable. Mutual Fund investments are subject to market risks. Read all scheme related documents carefully before investing.
                     </p>
                 </div>
